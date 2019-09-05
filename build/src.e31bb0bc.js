@@ -30609,7 +30609,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"components/App.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"components/AddOptions.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30618,6 +30618,151 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+class AddOptions extends _react.default.Component {
+  constructor(props) {
+    super(props);
+    this.handleAddOption = this.handleAddOption.bind(this);
+    this.state = {
+      error: undefined
+    };
+  }
+
+  handleAddOption(e) {
+    e.preventDefault();
+    const option = e.target.elements.option.value.trim(); // parent handleAddOption
+
+    const error = this.props.handleAddOption(option);
+    this.setState(() => ({
+      error
+    }));
+
+    if (!error) {
+      e.target.elements.option.value = '';
+    }
+  }
+
+  render() {
+    return _react.default.createElement("div", null, this.state.error && _react.default.createElement("p", null, this.state.error), _react.default.createElement("form", {
+      onSubmit: this.handleAddOption
+    }, _react.default.createElement("input", {
+      type: "text",
+      name: "option"
+    }), _react.default.createElement("button", null, "Add Option")));
+  }
+
+}
+
+exports.default = AddOptions;
+},{"react":"../node_modules/react/index.js"}],"components/Option.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Option = props => {
+  return _react.default.createElement("div", null, props.optionText, _react.default.createElement("button", {
+    onClick: e => {
+      props.handleDeleteOption(props.optionText);
+    }
+  }, "Remove"));
+};
+
+var _default = Option;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"components/Options.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _Option = _interopRequireDefault(require("./Option"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Options = props => {
+  return _react.default.createElement("div", null, _react.default.createElement("button", {
+    onClick: props.handleDeleteOptions
+  }, "Remove All"), props.options.length === 0 && _react.default.createElement("p", null, "Please add an option"), props.options.map(option => _react.default.createElement(_Option.default, {
+    key: option,
+    optionText: option,
+    handleDeleteOption: props.handleDeleteOption
+  })));
+};
+
+var _default = Options;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","./Option":"components/Option.js"}],"components/Action.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Action = props => {
+  return _react.default.createElement("div", null, _react.default.createElement("button", {
+    onClick: props.handlePick,
+    disabled: !props.hasOptions
+  }, "What should I do?"));
+};
+
+var _default = Action;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"components/Header.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Header = props => {
+  return _react.default.createElement("div", null, _react.default.createElement("h1", null, props.title), props.subtitle && _react.default.createElement("h2", null, props.subtitle));
+};
+
+Header.defaultProps = {
+  title: 'Indecision App'
+};
+var _default = Header;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"components/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _AddOptions = _interopRequireDefault(require("./AddOptions"));
+
+var _Options = _interopRequireDefault(require("./Options"));
+
+var _Action = _interopRequireDefault(require("./Action"));
+
+var _Header = _interopRequireDefault(require("./Header"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30693,92 +30838,25 @@ class IndecisionApp extends _react.default.Component {
 
   render() {
     const subtitle = 'Put your life in the hand of the computer.';
-    return _react.default.createElement("div", null, _react.default.createElement(Header, {
+    return _react.default.createElement("div", null, _react.default.createElement(_Header.default, {
       subtitle: subtitle
-    }), _react.default.createElement(Action, {
+    }), _react.default.createElement(_Action.default, {
       hasOptions: this.state.options.length > 0,
       handlePick: this.handlePick
-    }), _react.default.createElement(Options, {
+    }), _react.default.createElement(_Options.default, {
       options: this.state.options,
       handleDeleteOptions: this.handleDeleteOptions,
       handleDeleteOption: this.handleDeleteOption
-    }), _react.default.createElement(AddOptions, {
+    }), _react.default.createElement(_AddOptions.default, {
       handleAddOption: this.handleAddOption
     }));
   }
 
 }
 
-const Header = props => {
-  return _react.default.createElement("div", null, _react.default.createElement("h1", null, props.title), props.subtitle && _react.default.createElement("h2", null, props.subtitle));
-};
-
-Header.defaultProps = {
-  title: 'Indecision App'
-};
-
-const Action = props => {
-  return _react.default.createElement("div", null, _react.default.createElement("button", {
-    onClick: props.handlePick,
-    disabled: !props.hasOptions
-  }, "What should I do?"));
-};
-
-const Options = props => {
-  return _react.default.createElement("div", null, _react.default.createElement("button", {
-    onClick: props.handleDeleteOptions
-  }, "Remove All"), props.options.length === 0 && _react.default.createElement("p", null, "Please add an option"), props.options.map(option => _react.default.createElement(Option, {
-    key: option,
-    optionText: option,
-    handleDeleteOption: props.handleDeleteOption
-  })));
-};
-
-const Option = props => {
-  return _react.default.createElement("div", null, props.optionText, _react.default.createElement("button", {
-    onClick: e => {
-      props.handleDeleteOption(props.optionText);
-    }
-  }, "Remove"));
-};
-
-class AddOptions extends _react.default.Component {
-  constructor(props) {
-    super(props);
-    this.handleAddOption = this.handleAddOption.bind(this);
-    this.state = {
-      error: undefined
-    };
-  }
-
-  handleAddOption(e) {
-    e.preventDefault();
-    const option = e.target.elements.option.value.trim(); // parent handleAddOption
-
-    const error = this.props.handleAddOption(option);
-    this.setState(() => ({
-      error
-    }));
-
-    if (!error) {
-      e.target.elements.option.value = '';
-    }
-  }
-
-  render() {
-    return _react.default.createElement("div", null, this.state.error && _react.default.createElement("p", null, this.state.error), _react.default.createElement("form", {
-      onSubmit: this.handleAddOption
-    }, _react.default.createElement("input", {
-      type: "text",
-      name: "option"
-    }), _react.default.createElement("button", null, "Add Option")));
-  }
-
-}
-
 var _default = IndecisionApp;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./AddOptions":"components/AddOptions.js","./Options":"components/Options.js","./Action":"components/Action.js","./Header":"components/Header.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
